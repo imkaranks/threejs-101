@@ -1,4 +1,4 @@
 import "./style.css";
-import "./05. Move_Camera_With_Mouse";
+import "./06. Fullscreen_And_Resizing";
 
 console.log("app is up and running...");
