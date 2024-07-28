@@ -1,4 +1,4 @@
 import "./style.css";
-import "./06. Fullscreen_And_Resizing";
+import "./07. Geometry";
 
 console.log("app is up and running...");
