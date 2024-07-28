@@ -2,9 +2,17 @@ import * as THREE from "three";
 import gsap from "gsap";
 
 const canvas = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
+    width: window.innerWidth,
+    height: window.innerHeight,
+  },
+  stagger = 0.1,
+  boxCount = 15,
+  boxSpaceBetween = 0,
+  boxSize = 0.75,
+  waveMovementSpeed = 0.05,
+  speed = 0.001,
+  clock = new THREE.Clock(); /* #### Using Clock #### */
+let time = Date.now();
 
 const scene = new THREE.Scene();
 
@@ -22,17 +30,11 @@ camera.position.set(0, 0, 5);
 
 scene.add(camera);
 
-const stagger = 0.1,
-  boxCount = 15,
-  boxSpaceBetween = 0,
-  boxSize = 0.75,
-  waveYSpeed = 0.05;
-
 const boxes = new Array(boxCount).fill(0).map((_, idx) => {
   // const [x, y, z] = [(boxSize + boxSpaceBetween) * idx, 0, 0];
   const [x, y, z, hue] = [
     (boxSize + boxSpaceBetween) * idx,
-    Math.cos(idx * waveYSpeed),
+    Math.cos(idx * waveMovementSpeed),
     0,
     idx,
   ];
@@ -60,12 +62,6 @@ renderer.setSize(canvas.width, canvas.height);
 document.body.appendChild(renderer.domElement);
 renderer.render(scene, camera);
 
-const speed = 0.001;
-let time = Date.now();
-
-// #### Using Clock ####
-const clock = new THREE.Clock();
-
 // gsap.to(group.rotation, {
 //   y: Math.PI * 2,
 //   // duration: 1,
@@ -82,21 +78,20 @@ boxes.forEach((box, idx) => {
 });
 
 const animate = () => {
-  // #### Using frame rate diff ####
+  /* #### Using frame rate diff #### */
   // const currentTime = Date.now();
   // const deltaTime = currentTime - time;
   // time = currentTime;
 
-  // #### Using Clock ####
+  /* #### Using Clock #### */
   const elapsedTime = clock.getElapsedTime();
 
   boxes.forEach((box) => {
-    // if (elapsedTime > box.delay) {
-    const y = Math.cos((box.y += waveYSpeed));
+    // if (elapsedTime > box.delay) { ... }
+    const y = Math.cos((box.y += waveMovementSpeed));
     const hue = (box.hue += 0.075);
     box.object.position.y = y;
     box.object.material.color = new THREE.Color(`hsl(${hue}, 100%, 50%)`);
-    // }
   });
 
   // group.rotation.y += speed * deltaTime;
