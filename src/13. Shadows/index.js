@@ -10,6 +10,7 @@ const fps = 60;
 const frameDuration = 1000 / fps;
 let prevTimestamp = 0;
 let ticker = 0;
+let animationTick = 0;
 
 const gui = new GUI();
 
@@ -101,11 +102,11 @@ shadowMap.rotation.x = -Math.PI / 2;
 shadowMap.position.y = 0;
 scene.add(shadowMap);
 
-// const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
-const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(5, 5),
-  new THREE.MeshStandardMaterial({ map: texture })
-);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+// const plane = new THREE.Mesh(
+//   new THREE.PlaneGeometry(5, 5),
+//   new THREE.MeshStandardMaterial({ map: texture })
+// );
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = -0.5;
 plane.receiveShadow = true;
@@ -120,16 +121,14 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.x = 1;
-camera.position.y = 1;
-camera.position.z = 2;
+camera.position.set(1, 1, 4);
 scene.add(camera);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 document.body.appendChild(renderer.domElement);
 // renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.render(scene, camera);
 
 const orbit = new OrbitControls(camera, renderer.domElement);
@@ -143,21 +142,20 @@ const init = () => {
   camera.updateProjectionMatrix();
 };
 
-let tick = 0;
 const animate = (timestamp) => {
   const deltaTime = timestamp - prevTimestamp;
   prevTimestamp = timestamp;
 
   if (ticker > frameDuration) {
-    sphere.position.x = Math.cos(tick) * 1.5;
-    sphere.position.y = Math.abs(Math.sin(tick * 2) * 1.5);
-    sphere.position.z = Math.sin(tick) * 1.5;
+    sphere.position.x = Math.cos(animationTick) * 1.5;
+    sphere.position.y = Math.abs(Math.sin(animationTick * 2) * 1.5);
+    sphere.position.z = Math.sin(animationTick) * 1.5;
 
     shadowMap.position.x = sphere.position.x;
     shadowMap.position.z = sphere.position.z;
     shadowMap.material.opacity = (1 - sphere.position.y) * 0.6;
 
-    tick += deltaTime * 0.005;
+    animationTick += deltaTime * 0.005;
     orbit.update();
     renderer.render(scene, camera);
     ticker = 0;
